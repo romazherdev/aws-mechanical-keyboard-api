@@ -57,11 +57,17 @@ provider:
 #    - include-me-dir/**
 
 functions:
-  hello:
-    handler: handler.getProductsList
+  getProductList:
+    handler: handler.getProductList
     events:
       - http:
           path: /products
+          method: get
+  getProductById:
+    handler: handler.getProductById
+    events:
+      - http:
+          path: /products/{productId}
           method: get
 #      - websocket: $connect
 #      - s3: ${env:BUCKET}
