@@ -1,5 +1,6 @@
-import { MockProductService, ProductService, setupDIContainer } from './src/core';
+import { setupDIContainer } from './src/core';
 import { getProductList, getProductById } from './src/functions'
+import { MockProductService, ProductService } from './src/functions/services';
 import { MOCK_PRODUCTS } from './src/mocks';
 
 setupDIContainer([

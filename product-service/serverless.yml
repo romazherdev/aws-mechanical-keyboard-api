@@ -23,12 +23,14 @@ functions:
       - http:
           path: /products
           method: get
+          cors: true
   getProductById:
     handler: index.getProductById
     events:
       - http:
           path: /products/{productId}
           method: get
+          cors: true
 custom:
     autoswagger:
         generateSwaggerOnDeploy: true

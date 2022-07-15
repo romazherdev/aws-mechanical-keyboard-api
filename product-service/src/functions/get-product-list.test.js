@@ -1,14 +1,17 @@
-import { MockProductService, ProductService, setupDIContainer } from '../core';
+import { setupDIContainer } from '../core';
+import { MockProductService, ProductService } from './services';
+import { buildHeaders } from '../helpers';
 import { getProductList } from './get-product-list';
 
 describe('getProductList', () => {
+    const headers = buildHeaders();
     let products = [
         {
-            name: 'Keyboard 1',
+            title: 'Keyboard 1',
             price: 10,
         },
         {
-            name: 'Keyboard 2',
+            title: 'Keyboard 2',
             price: 20,
         }
     ];
@@ -24,5 +27,6 @@ describe('getProductList', () => {
 
         expect(JSON.parse(result.body)).toEqual(products);
         expect(result.statusCode).toBe(200);
+        expect(result.headers).toEqual(headers);
     });
 });

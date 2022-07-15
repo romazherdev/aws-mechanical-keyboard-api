@@ -1,10 +1,13 @@
-import { MockProductService, ProductService, setupDIContainer } from '../core';
+import { setupDIContainer } from '../core';
+import { MockProductService, ProductService } from './services';
+import { buildHeaders } from '../helpers';
 import { getProductById } from './get-product-by-id';
 
 describe('getProductById', () => {
+    const headers = buildHeaders();
     let products = [
         {
-            name: 'Keyboard 1',
+            title: 'Keyboard 1',
             price: 10,
         },
     ];
@@ -26,6 +29,7 @@ describe('getProductById', () => {
 
         expect(JSON.parse(result.body)).toEqual(products[0]);
         expect(result.statusCode).toBe(200);
+        expect(result.headers).toEqual(headers);
     });
 
     it('should return 404 if product not found', async () => {
@@ -39,5 +43,6 @@ describe('getProductById', () => {
 
         expect(result.body).toBe('');
         expect(result.statusCode).toBe(404);
+        expect(result.headers).toEqual(headers);
     });
 });

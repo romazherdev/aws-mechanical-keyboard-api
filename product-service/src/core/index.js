@@ -1,2 +1,1 @@
-export * from './di';
-export * from './services';
+export * from './di/container';
