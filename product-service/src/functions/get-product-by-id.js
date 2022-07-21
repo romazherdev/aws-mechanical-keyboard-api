@@ -1,14 +1,17 @@
-import { resolve } from '../core';
-import { ProductService } from './services';
 import { buildHeaders } from '../helpers';
+import { useDbConnection } from '../db';
+import { ProductService } from '../services';
 
 export async function getProductById(event) {
     const { productId } = event.pathParameters;
     const headers = buildHeaders();
 
-    const service = resolve(ProductService);
+    let product;
 
-    const product = await service.getOne(productId);
+    await useDbConnection(async (client) => {
+        const service = new ProductService(client)
+        product = await service.getOne(productId);
+    });
 
     if (!product) {
         return {

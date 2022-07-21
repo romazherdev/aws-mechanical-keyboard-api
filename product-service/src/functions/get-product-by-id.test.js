@@ -1,27 +1,37 @@
-import { setupDIContainer } from '../core';
-import { MockProductService, ProductService } from './services';
 import { buildHeaders } from '../helpers';
 import { getProductById } from './get-product-by-id';
 
+import { useDbConnection } from '../db';
+import { ProductService } from '../services';
+
+jest.mock('../db');
+jest.mock('../services');
+
 describe('getProductById', () => {
     const headers = buildHeaders();
-    let products = [
-        {
-            title: 'Keyboard 1',
-            price: 10,
-        },
+    const products = [
+        { id: '1', title: 'Product 1' },
+        { id: '2', title: 'Product 2' }
     ];
 
     beforeAll(() => {
-        setupDIContainer([
-            [ProductService, new MockProductService(products)]
-        ]);
+        useDbConnection.mockImplementation((callback) => callback());
+        ProductService.mockImplementation(() => ({
+            getOne(id) {
+                return products.find(p => p.id === id);
+            }
+        }));
+    });
+
+    beforeEach(() => {
+        ProductService.mockClear();
+        useDbConnection.mockClear();
     });
 
     it('should return specific product', async () => {
         const event = {
             pathParameters: {
-                productId: 0,
+                productId: '1',
             }
         };
 
@@ -35,7 +45,7 @@ describe('getProductById', () => {
     it('should return 404 if product not found', async () => {
         const event = {
             pathParameters: {
-                productId: 999,
+                productId: '999',
             }
         };
 
