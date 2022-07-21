@@ -1,31 +1,33 @@
-import { setupDIContainer } from '../core';
-import { MockProductService, ProductService } from './services';
 import { buildHeaders } from '../helpers';
 import { getProductList } from './get-product-list';
 
+import { useDbConnection } from '../db';
+import { ProductService } from '../services';
+
+jest.mock('../db');
+jest.mock('../services');
+
 describe('getProductList', () => {
     const headers = buildHeaders();
-    let products = [
-        {
-            title: 'Keyboard 1',
-            price: 10,
-        },
-        {
-            title: 'Keyboard 2',
-            price: 20,
-        }
-    ];
 
     beforeAll(() => {
-        setupDIContainer([
-            [ProductService, new MockProductService(products)]
-        ]);
+        useDbConnection.mockImplementation((callback) => callback());
+        ProductService.mockImplementation(() => ({
+            getAll() {
+                return []
+            }
+        }));
+    });
+
+    beforeEach(() => {
+        ProductService.mockClear();
+        useDbConnection.mockClear();
     });
 
     it('should return mock data', async () => {
         const result = await getProductList({});
 
-        expect(JSON.parse(result.body)).toEqual(products);
+        expect(JSON.parse(result.body)).toEqual([]);
         expect(result.statusCode).toBe(200);
         expect(result.headers).toEqual(headers);
     });
